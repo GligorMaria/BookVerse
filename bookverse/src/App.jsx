@@ -1,127 +1,106 @@
-import { useEffect, useState } from "react";
-import { auth, provider, db, storage, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "./firebase";
-import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, addDoc, doc, setDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useState, useEffect } from "react";
+import { collection, onSnapshot, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from './firebase';
+import BookCard from './components/BookCard';
 
 function App() {
-  const [user, setUser] = useState(null);
   const [books, setBooks] = useState([]);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [file, setFile] = useState(null);
 
-  // Track logged-in user
+  // 🔁 Real-time Firestore sync
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        // Save user info on first login
-        const userRef = doc(db, "users", currentUser.uid);
-        const docSnap = await getDocs(userRef);
-        if (!docSnap.exists()) {
-          await setDoc(userRef, {
-            uid: currentUser.uid,
-            name: currentUser.displayName || currentUser.email,
-            email: currentUser.email,
-            createdAt: new Date()
-          });
-        }
-        fetchBooks();
-      } else {
-        setUser(null);
-        setBooks([]);
-      }
+    const unsubscribe = onSnapshot(collection(db, 'books'), (snapshot) => {
+      const booksData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setBooks(booksData);
     });
     return () => unsubscribe();
   }, []);
 
-  // Fetch books
-  const fetchBooks = async () => {
-    if (!user) return;
-    const booksCol = collection(db, "books");
-    const snapshot = await getDocs(booksCol);
-    const booksList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setBooks(booksList);
-  };
-
-  // Add book
+  // 📤 Add book to Firestore + upload cover
   const handleAddBook = async (e) => {
     e.preventDefault();
-    if (!user || !title || !author) return;
+    if (!title || !author) return;
 
-    let coverUrl = "";
+    let coverUrl = null;
+
     if (file) {
-      const storageRef = ref(storage, `book-covers/${file.name}`);
+      const storageRef = ref(storage, `covers/${Date.now()}-${file.name}`);
       await uploadBytes(storageRef, file);
       coverUrl = await getDownloadURL(storageRef);
     }
 
-    await addDoc(collection(db, "books"), { title, author, coverUrl });
+    await addDoc(collection(db, 'books'), {
+      title,
+      author,
+      coverUrl,
+      createdAt: new Date()
+    });
+
     setTitle("");
     setAuthor("");
     setFile(null);
-    fetchBooks();
   };
 
-  // Sign in Google
-  const handleGoogleLogin = async () => {
-    try { await signInWithPopup(auth, provider); } catch (err) { console.error(err); }
-  };
-
-  // Sign out
-  const handleLogout = async () => { await signOut(auth); };
-
-  // Search filter
-  const filteredBooks = books.filter(b =>
+  // 🔍 Filter books by search term
+  const filteredBooks = books.filter((b) =>
     b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     b.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <h1>BookVerse 📚</h1>
+    <div className="p-6 font-sans bg-gray-50 min-h-screen">
+      <h1 className="text-4xl font-bold text-blue-700 mb-6">BookVerse 📚</h1>
 
-      {!user ? (
-        <div>
-          <button onClick={handleGoogleLogin} style={{ padding: "10px", marginRight: "10px" }}>Sign in with Google</button>
-          {/* Add email login/sign-up buttons if needed */}
-        </div>
-      ) : (
-        <div>
-          <p>Welcome, {user.displayName || user.email}</p>
-          <button onClick={handleLogout} style={{ padding: "10px" }}>Sign Out</button>
+      <form onSubmit={handleAddBook} className="mb-6 flex flex-wrap gap-4 items-center">
+        <input
+          placeholder="Book Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="px-3 py-2 border rounded w-48"
+        />
+        <input
+          placeholder="Author"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          className="px-3 py-2 border rounded w-48"
+        />
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files[0])}
+          className="w-48"
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+        >
+          Add Book
+        </button>
+      </form>
 
-          {/* Add book form */}
-          <form onSubmit={handleAddBook} style={{ marginTop: "20px", marginBottom: "20px" }}>
-            <input placeholder="Book Title" value={title} onChange={e => setTitle(e.target.value)} style={{ padding: "8px", marginRight: "10px" }} />
-            <input placeholder="Author" value={author} onChange={e => setAuthor(e.target.value)} style={{ padding: "8px", marginRight: "10px" }} />
-            <input type="file" onChange={e => setFile(e.target.files[0])} style={{ marginRight: "10px" }} />
-            <button type="submit" style={{ padding: "8px" }}>Add Book</button>
-          </form>
+      <input
+        placeholder="Search books..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="px-3 py-2 border rounded w-72 mb-6"
+      />
 
-          {/* Search */}
-          <input
-            placeholder="Search books..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            style={{ padding: "8px", marginBottom: "20px", width: "300px" }}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredBooks.map((book) => (
+          <BookCard
+            key={book.id}
+            title={book.title}
+            author={book.author}
+            description={book.coverUrl ? "Cover uploaded" : "No cover"}
           />
-
-          {/* Book list */}
-          <div>
-            {filteredBooks.map(book => (
-              <div key={book.id} style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px" }}>
-                <h2>{book.title}</h2>
-                <p>by {book.author}</p>
-                {book.coverUrl && <img src={book.coverUrl} alt={book.title} style={{ width: "100px", height: "auto" }} />}
-              </div>
-            ))}
-            {filteredBooks.length === 0 && <p>No books found.</p>}
-          </div>
-        </div>
-      )}
+        ))}
+        {filteredBooks.length === 0 && (
+          <p className="text-gray-500">No books found.</p>
+        )}
+      </div>
     </div>
   );
 }
