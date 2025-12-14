@@ -1,16 +1,26 @@
-# React + Vite
+# BookVerse
+BookVerse is a modern web app built for book lovers — a place where users can explore, share, and discuss their favorite books in real time. It combines social interaction, cloud storage, and seamless authentication to create a vibrant reading community.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Features
 
-Currently, two official plugins are available:
+✅ Social Login — Sign in easily using Google, Facebook, or email & password via Firebase Authentication.  
+✅ Realtime Database — All user actions (adding reviews, rating books, comments) are synced instantly through Cloud Firestore.  
+✅ Image Uploads — Users can upload book covers, profile pictures, or reading snapshots using Firebase Storage.  
+✅ Email Notifications — Welcome and event-triggered emails are sent through Firebase Functions.  
+✅ Responsive Design — Works beautifully on desktop, tablet, and mobile.  
+✅ Search & Filter — Quickly find books or authors through a smart search bar.  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🧩 Tech Stack  
+Frontend: React, TailwindCSS, Vite  
+Backend: Firebase Cloud Functions  
+Database: Firebase Cloud Firestore  
+Storage: Firebase Storage  
+Auth: Firebase Authentication  
+Hosting: Firebase Hosting  
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🛠️ Installation & Setup  
+```bash
+git clone https://github.com/GligorMaria/BookVerse.git
+cd bookverse
+npm install
+npm start
