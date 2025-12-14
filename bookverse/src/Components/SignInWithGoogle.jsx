@@ -1,35 +1,32 @@
 import googleLogo from "../google.png";
-import { signInWithRedirect, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import {auth} from "../firebase/firebase"
-import {useNavigate } from 'react-router-dom';
 
 
 function SignInWithGoogle()
 {
-    const navigate = useNavigate();
-     const googleLogin = () => {
-    const provider = new GoogleAuthProvider();
+     const signInWithGoogle = async () => {
 
-    signInWithRedirect(auth, provider)
-      .then((result) => {
-        console.log(result);
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error(error.code, error.message);
-      });
-  };
+        try {
+            const provider = new GoogleAuthProvider();
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error("Error initiating Google sign-in:", error.message);
+        }
+    };
 
     return(
-        <div className="mt-4">
-            <p className="text-center">--Or continue with--</p>
-            <div className="justify-center"onClick={googleLogin}>
-                <img src={googleLogo}
-                alt="Google logo"
-                width="60%"
-                className="mx-auto"></img>
-            </div>
-        </div>
+        <button
+          type="button"
+          onClick={signInWithGoogle}
+          className="mt-3 w-full"
+        >
+          <img
+            src={googleLogo}
+            alt="Sign in with Google"
+            className="mx-auto h-10 cursor-pointer"
+          />
+        </button>
     );
 }
 

@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebase.js';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth.jsx';
 //import {SignInWithGoogle} from "../Components/SignInWithGoogle.jsx"
 import SignInWithGoogle from "../Components/SignInWithGoogle.jsx";
 
@@ -11,23 +12,19 @@ function LogIn()
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => 
     {
         e.preventDefault()
 
-        signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in 
-          const user = userCredential.user;
-          navigate("/")
-          // ...
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-        });
+        try {
+           await signInWithEmailAndPassword(auth, email, password);
+        
+        }catch(error) {
+          console.error("Login failed:", error.message);
+          /*const errorCode = error.code;
+          const errorMessage = error.message;*/
+        }
     }
 
     return (
@@ -54,7 +51,7 @@ function LogIn()
                         className="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border gray-600"></input><br/>
                         
                     </label>
-                    <button type='submit' className="mt-3">Log In</button>
+                    <button type='submit' className=" border bg-black text-white mt-3 h-7 w-15 rounded-md">Log In</button>
                     <SignInWithGoogle/>
                     <p className="mt-3">Don't have an account? <Link to="/signup">SignUp</Link></p>
                 </form>
