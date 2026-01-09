@@ -27,9 +27,12 @@ export default function BookCard({ id, title, author, description, coverImageURL
 
         {/* View Notes */}
         <div className="flex justify-between items-center">
-          <button className="text-[10px] uppercase tracking-widest text-[#D4AF37]">
+          <Link 
+            to={`/book/${id}`} 
+            className="text-[10px] uppercase tracking-widest text-[#D4AF37] hover:text-[#4A443F] transition-colors"
+          >
             View Notes
-          </button>
+          </Link>
           <span className="text-[10px] text-gray-400 italic">
             Book No. {Math.floor(Math.random() * 1000)}
           </span>

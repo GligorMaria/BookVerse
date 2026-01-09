@@ -19,7 +19,7 @@ function SignOut() {
     };
 
     return(
-       <button onClick={handleSignOut}>
+       <button className="px-6 py-2 border border-[#D4AF37] text-[10px] uppercase tracking-widest text-[#D4AF37] rounded-full hover:bg-[#D4AF37] hover:text-white transition-all duration-500" onClick={handleSignOut}>
             Sign Out
         </button>
     )

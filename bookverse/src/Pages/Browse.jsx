@@ -45,7 +45,7 @@ function Browse() {
         </span>
         <h1 className="text-5xl md:text-7xl font-serif italic mb-6 text-[#4A443F]">
           The Library of Whispers
-        </h1>
+        </h1>search
         <p className="max-w-xl mx-auto text-[#8C8279] leading-relaxed italic font-light text-lg">
           "{quote}"
         </p>

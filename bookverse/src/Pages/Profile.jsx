@@ -4,6 +4,14 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "../firebase/firebase.js";
 import SignOut from "../Components/SignOut";
 
+
+// Helper function to check status
+/*const checkAdminStatus = async (user) => {
+  if (!user) return false;
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  return userDoc.exists() && userDoc.data().role === "admin";
+};*/
+
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [uploading, setUploading] = useState(false);

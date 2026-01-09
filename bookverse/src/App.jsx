@@ -10,7 +10,7 @@ import Profile from './Pages/Profile.jsx';
 
 import { ProtectedRoute } from './Components/Protected.jsx';
 import { AuthProvider } from './hooks/useAuth.jsx';
-
+import BookDetails from './Pages/BookDetails';
 import Review from "./Pages/Review";
 
 function App() {
@@ -26,7 +26,11 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/review/:id" element={<Review />} />
-        </Routes>
+          <Route path="/book/:id" element={<BookDetails />} />
+          {/*
+          for after admin function is completed:
+          <Route path="/admin" element={userIsAdmin ? <AdminDashboard /> : <Navigate to="/login" />} />*/}
+          </Routes>*
       </AuthProvider>
     </Router>
   );
