@@ -44,21 +44,35 @@ function Navbar() {
                     <span className={`absolute bottom-0 left-0 h-[1px] bg-[#D4AF37] transition-all duration-500 ${isActive('/browse') ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
                 </Link>
 
-                <Link
-                    to="/books"
-                    className={`${styles.link} ${isActive('/books') ? styles.activeLink : ''}`}
-                >
-                    My Archive
-                    <span className={`absolute bottom-0 left-0 h-[1px] bg-[#D4AF37] transition-all duration-500 ${isActive('/books') ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-                </Link>
+                {/* --- Secțiune vizibilă doar dacă user-ul este logat --- */}
+                {user && (
+                    <>
+                        <Link
+                            to="/books"
+                            className={`${styles.link} ${isActive('/books') ? styles.activeLink : ''}`}
+                        >
+                            My Archive
+                            <span className={`absolute bottom-0 left-0 h-[1px] bg-[#D4AF37] transition-all duration-500 ${isActive('/books') ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+                        </Link>
 
-                <Link
-                    to="/profile"
-                    className={`${styles.link} ${isActive('/profile') ? styles.activeLink : ''}`}
-                >
-                    Curator
-                    <span className={`absolute bottom-0 left-0 h-[1px] bg-[#D4AF37] transition-all duration-500 ${isActive('/profile') ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-                </Link>
+                        {/* --- LINK NOU: Fellow Curators --- */}
+                        <Link
+                            to="/curators"
+                            className={`${styles.link} ${isActive('/curators') ? styles.activeLink : ''}`}
+                        >
+                            Fellows
+                            <span className={`absolute bottom-0 left-0 h-[1px] bg-[#D4AF37] transition-all duration-500 ${isActive('/curators') ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+                        </Link>
+
+                        <Link
+                            to="/profile"
+                            className={`${styles.link} ${isActive('/profile') ? styles.activeLink : ''}`}
+                        >
+                            Curator
+                            <span className={`absolute bottom-0 left-0 h-[1px] bg-[#D4AF37] transition-all duration-500 ${isActive('/profile') ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+                        </Link>
+                    </>
+                )}
 
                 {/* --- Authentication State --- */}
                 <div className="ml-6 pl-6 border-l border-[#E8E2D9]">
