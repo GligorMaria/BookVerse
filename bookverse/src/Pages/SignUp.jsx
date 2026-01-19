@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase/firebase.js';
+import { auth, db } from '../firebase/firebase.js'; // Added db
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore'; // Added Firestore methods
 import { Link, useNavigate } from 'react-router-dom';
 import SignInWithGoogle from "../Components/SignInWithGoogle.jsx";
 
@@ -14,9 +15,17 @@ function SignUp() {
     const handelSubmit = async (e) => {
         e.preventDefault();
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // --- ADDED: Create user document in Firestore ---
+            await setDoc(doc(db, "users", user.uid), {
+                email: user.email,
+                role: "user", // Default role
+                createdAt: new Date()
+            });
+
             setSuccess(true);
-            // Optional: redirect to dashboard after a short delay
             setTimeout(() => navigate('/dashboard'), 2000);
         } catch (error) {
             console.error("Signup failed:", error.message);
@@ -25,11 +34,8 @@ function SignUp() {
     };
 
     return (
-        /* Matching the centered LogIn background */
         <div className="min-h-screen w-full flex items-center justify-center bg-[#FDFCF8] p-4">
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg border border-gray-100">
-                
-                {/* Header */}
                 <div className="mb-8 text-center">
                     <h2 className="text-2xl font-bold text-[#4A443F]">Create Account</h2>
                     <p className="text-[#8C8279] text-sm">Join us to get started</p>
@@ -42,7 +48,6 @@ function SignUp() {
                 ) : null}
 
                 <form onSubmit={handelSubmit} className="space-y-5">
-                    {/* Email Field */}
                     <div>
                         <label className="block text-sm font-medium text-[#4A443F] mb-1">Email</label>
                         <input
@@ -54,8 +59,6 @@ function SignUp() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-
-                    {/* Password Field */}
                     <div>
                         <label className="block text-sm font-medium text-[#4A443F] mb-1">Password</label>
                         <div className="relative">
@@ -76,8 +79,6 @@ function SignUp() {
                             </button>
                         </div>
                     </div>
-
-                    {/* Sign Up Button with same Hover Fix */}
                     <button 
                         type="submit"
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#4A443F'}
@@ -88,8 +89,6 @@ function SignUp() {
                         Sign Up
                     </button>
                 </form>
-
-                {/* Divider */}
                 <div className="relative my-6">
                     <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-gray-200"></div>
@@ -98,11 +97,7 @@ function SignUp() {
                         <span className="px-2 bg-white text-gray-500">Or continue with</span>
                     </div>
                 </div>
-
-                {/* Google Component */}
                 <SignInWithGoogle />
-
-                {/* Footer Link */}
                 <p className="mt-6 text-center text-sm text-gray-600">
                     Already registered? <Link to="/login" className="text-amber-600 font-bold hover:underline">Log In</Link>
                 </p>
