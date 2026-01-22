@@ -1,80 +1,51 @@
-# BookVerse
-BookVerse is a modern web app built for book lovers — a place where users can explore, share, and discuss their favorite books in real time. It combines social interaction, cloud storage, and seamless authentication to create a vibrant reading community.
+# 📚 BookVerse
 
-🚀 Features
+**BookVerse** is a modern web application designed for book lovers who want to explore, share, and discuss books in an interactive and social environment.  
+The platform leverages **Firebase** for authentication, real-time data synchronization, and media storage, offering a smooth and responsive user experience.
 
-✅ Social Login — Sign in easily using Google, Facebook, or email & password via Firebase Authentication.
-✅ Realtime Database — All user actions (adding reviews, rating books, comments) are synced instantly through Cloud Firestore.
-✅ Image Uploads — Users can upload book covers, profile pictures, or reading snapshots using Firebase Storage.
-✅ Email Notifications — Welcome and event-triggered emails are sent through Firebase Functions.
-✅ Responsive Design — Works beautifully on desktop, tablet, and mobile.
-✅ Search & Filter — Quickly find books or authors through a smart search bar.
+<img width="1904" height="924" alt="image" src="https://github.com/user-attachments/assets/05142f12-c401-4da7-8e9f-090e3582b066" />
+---
 
-🧩 Tech Stack
-Layer	Technology
-Frontend	HTML, CSS, JavaScript, React (or Vanilla JS if you didn’t use React)
-Backend	Firebase Cloud Functions
-Database	Firebase Cloud Firestore
-Storage	Firebase Storage
-Auth	Firebase Authentication
-Hosting	Firebase Hosting
-🛠️ Installation & Setup
+## 🚀 Features
 
-Clone this repository
+- 🔐 **User Authentication**  
+  Secure login and registration using Firebase Authentication (Email / Social providers).
 
-git clone https://github.com/yourusername/bookverse.git
-cd bookverse
+- 📖 **Book Sharing & Reviews**  
+  Users can add books, write reviews, and rate their favorite reads.
+ Users can add books, write reviews, and rate their favorite reads.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/29aa7024-ea0c-4f81-b29b-b8d895d85a3a" width="750" />
+  <br><br>
+  
+  <img src="https://github.com/user-attachments/assets/771410da-ae0b-4a5b-a0b9-69bcdad6e951" width="750" />
+  <br><br>
+  
+  <img src="https://github.com/user-attachments/assets/e027fd53-a22e-4da4-8d2e-859b68d49cd9" width="750" />
+</p>
 
-Install dependencies
+- 💬 **Real-Time Interaction**  
+  Reviews and comments update instantly using Firebase Cloud Firestore.
 
-npm install
+- 🖼️ **Image Uploads**  
+  Upload book covers and profile pictures via Firebase Storage.
+  <img width="1881" height="913" alt="image" src="https://github.com/user-attachments/assets/2ada9727-63a5-4d95-a61e-35c5f8ea7f43" />
+- 🔍 **Search Functionality**  
+  Easily search for books and authors.
 
+---
 
-Set up Firebase
+## 🧠 Tech Stack
 
-Create a project at Firebase Console
+- **Frontend:** HTML, CSS, JavaScript  
+- **Backend:** Firebase Functions  
+- **Database:** Firebase Cloud Firestore  
+- **Authentication:** Firebase Authentication  
+- **Storage:** Firebase Storage  
+- **Hosting:** Firebase Hosting
 
-Enable Authentication, Firestore, Storage, and Functions
+---
 
-Copy your Firebase config and add it to a .env or firebaseConfig.js file
-
-Run locally
-
-npm start
-
-
-The app will run at http://localhost:3000
-
-Deploy to Firebase
-
-firebase deploy
-
-📷 Screenshots
-
-(Add images here, e.g. login page, home feed, book details view)
-
-💡 Future Improvements
-
-📖 Add AI-based book recommendations
-
-👥 Add friend lists and follow system
-
-🏅 Create user achievements for reading milestones
-
-💬 Implement chat for book clubs
-
-👩‍💻 Authors
-
-Maria Gligor:
-— Student at Automatica și Calculatoare, passionate about building apps that connect people through creativity and learning.
-Backend & Firebase Integrator
-🌐 GitHub: GligorMaria
-
-Eribacan Ana: Designer / QA 
-🌐 GitHub: yourusername
-
-Negy Anouk: Frontend Lead
-🌐 GitHub: yourusername
 
 
