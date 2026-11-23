@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BookVerse</string>
+    <string name="title_activity_main">BookVerse</string>
+    <string name="package_name">com.bookverse.app</string>
+    <string name="custom_url_scheme">com.bookverse.app</string>
+</resources>

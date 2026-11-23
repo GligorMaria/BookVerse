@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment / secrets
+.env
+.env.*
+*.env
+!.env.example
+
+# Firebase Android config
+google-services.json
+
+# Android build artifacts
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+captures/
+*.keystore
+*.jks

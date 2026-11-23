@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { auth, provider, db, storage, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "./firebase";
-import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, addDoc, doc, setDoc } from "firebase/firestore";
+import { auth, db, storage, signInWithGoogle, logOut } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs, getDoc, addDoc, doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         setUser(currentUser);
         // Save user info on first login
         const userRef = doc(db, "users", currentUser.uid);
-        const docSnap = await getDocs(userRef);
+        const docSnap = await getDoc(userRef);
         if (!docSnap.exists()) {
           await setDoc(userRef, {
             uid: currentUser.uid,
@@ -28,7 +28,7 @@ function App() {
             createdAt: new Date()
           });
         }
-        fetchBooks();
+        fetchBooks(currentUser);
       } else {
         setUser(null);
         setBooks([]);
@@ -38,8 +38,8 @@ function App() {
   }, []);
 
   // Fetch books
-  const fetchBooks = async () => {
-    if (!user) return;
+  const fetchBooks = async (currentUser = user) => {
+    if (!currentUser) return;
     const booksCol = collection(db, "books");
     const snapshot = await getDocs(booksCol);
     const booksList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -67,11 +67,11 @@ function App() {
 
   // Sign in Google
   const handleGoogleLogin = async () => {
-    try { await signInWithPopup(auth, provider); } catch (err) { console.error(err); }
+    try { await signInWithGoogle(); } catch (err) { console.error(err); }
   };
 
   // Sign out
-  const handleLogout = async () => { await signOut(auth); };
+  const handleLogout = async () => { await logOut(); };
 
   // Search filter
   const filteredBooks = books.filter(b =>
