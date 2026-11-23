@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validBook(data) {
+      return data.userId == request.auth.uid
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 200
+        && data.author is string && data.author.size() > 0 && data.author.size() <= 200
+        && (!('coverUrl' in data) || data.coverUrl is string);
+    }
+
+    // Each user can read and write only their own profile.
+    match /users/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // Each book belongs to the user in its userId field.
+    match /books/{bookId} {
+      allow read, delete: if signedIn() && resource.data.userId == request.auth.uid;
+      allow create: if signedIn() && validBook(request.resource.data);
+      // userId must stay the same, so a book cannot be handed to someone else.
+      allow update: if signedIn()
+        && resource.data.userId == request.auth.uid
+        && validBook(request.resource.data);
+    }
+
+    // Everything else is closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

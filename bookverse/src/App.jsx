@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { auth, db, storage, signInWithGoogle, logOut } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, getDoc, addDoc, doc, setDoc } from "firebase/firestore";
+import { collection, getDocs, getDoc, addDoc, doc, setDoc, query, where, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function App() {
@@ -40,8 +40,9 @@ function App() {
   // Fetch books
   const fetchBooks = async (currentUser = user) => {
     if (!currentUser) return;
-    const booksCol = collection(db, "books");
-    const snapshot = await getDocs(booksCol);
+    // Only this user's books (the security rules reject any other query).
+    const booksQuery = query(collection(db, "books"), where("userId", "==", currentUser.uid));
+    const snapshot = await getDocs(booksQuery);
     const booksList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setBooks(booksList);
   };
@@ -49,16 +50,24 @@ function App() {
   // Add book
   const handleAddBook = async (e) => {
     e.preventDefault();
-    if (!user || !title || !author) return;
+    if (!user || !title.trim() || !author.trim()) return;
 
     let coverUrl = "";
     if (file) {
-      const storageRef = ref(storage, `book-covers/${file.name}`);
+      // Unique path per user, so covers with the same file name don't overwrite each other.
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const storageRef = ref(storage, `covers/${user.uid}/${Date.now()}-${safeName}`);
       await uploadBytes(storageRef, file);
       coverUrl = await getDownloadURL(storageRef);
     }
 
-    await addDoc(collection(db, "books"), { title, author, coverUrl });
+    await addDoc(collection(db, "books"), {
+      userId: user.uid,
+      title: title.trim(),
+      author: author.trim(),
+      coverUrl,
+      createdAt: serverTimestamp()
+    });
     setTitle("");
     setAuthor("");
     setFile(null);
@@ -74,9 +83,10 @@ function App() {
   const handleLogout = async () => { await logOut(); };
 
   // Search filter
+  const term = searchTerm.toLowerCase();
   const filteredBooks = books.filter(b =>
-    b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    b.author.toLowerCase().includes(searchTerm.toLowerCase())
+    (b.title || "").toLowerCase().includes(term) ||
+    (b.author || "").toLowerCase().includes(term)
   );
 
   return (
@@ -97,7 +107,7 @@ function App() {
           <form onSubmit={handleAddBook} style={{ marginTop: "20px", marginBottom: "20px" }}>
             <input placeholder="Book Title" value={title} onChange={e => setTitle(e.target.value)} style={{ padding: "8px", marginRight: "10px" }} />
             <input placeholder="Author" value={author} onChange={e => setAuthor(e.target.value)} style={{ padding: "8px", marginRight: "10px" }} />
-            <input type="file" onChange={e => setFile(e.target.files[0])} style={{ marginRight: "10px" }} />
+            <input type="file" accept="image/*" onChange={e => setFile(e.target.files[0])} style={{ marginRight: "10px" }} />
             <button type="submit" style={{ padding: "8px" }}>Add Book</button>
           </form>
 
