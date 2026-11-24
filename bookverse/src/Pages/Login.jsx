@@ -14,7 +14,7 @@ function LogIn() {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            navigate('/dashboard'); 
+            navigate('/books'); 
         } catch (error) {
             console.error("Login failed:", error.message);
             alert("Login failed. Please check your credentials.");

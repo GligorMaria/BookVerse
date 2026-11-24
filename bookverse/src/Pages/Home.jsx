@@ -54,7 +54,7 @@ function Home() {
           </Link>
 
           <Link
-            to="/mybooks"
+            to="/books"
             className="group relative px-8 py-3 font-medium text-[#4A443F] transition-all duration-300"
           >
             <span className="relative z-10">Your Archive</span>

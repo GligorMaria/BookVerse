@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import NotFound from './Pages/NotFound.jsx';
 import Navbar from './Components/Navbar.jsx'; 
 import Home from './Pages/Home.jsx';
 import Browse from './Pages/Browse.jsx';
@@ -38,7 +39,12 @@ function App() {
           {/*
           for after admin function is completed:
           <Route path="/admin" element={userIsAdmin ? <AdminDashboard /> : <Navigate to="/login" />} />*/}
-          </Routes>*
+
+          {/* Old links and anything unknown */}
+          <Route path="/mybooks" element={<Navigate to="/books" replace />} />
+          <Route path="/dashboard" element={<Navigate to="/books" replace />} />
+          <Route path="*" element={<NotFound />} />
+          </Routes>
       </AuthProvider>
     </Router>
   );

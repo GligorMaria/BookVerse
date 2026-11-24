@@ -26,7 +26,7 @@ function SignUp() {
             });
 
             setSuccess(true);
-            setTimeout(() => navigate('/dashboard'), 2000);
+            setTimeout(() => navigate('/books'), 2000);
         } catch (error) {
             console.error("Signup failed:", error.message);
             alert("Signup failed: " + error.message);
