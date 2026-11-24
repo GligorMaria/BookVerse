@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { doc, getDoc, deleteDoc } from "firebase/firestore"; // Added deleteDoc
-import { db, auth } from "../firebase/firebase.js"; // Added auth
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth, deleteBook } from "../firebase/firebase.js";
 
 function BookDetails() {
   const { id } = useParams();
@@ -37,7 +37,7 @@ function BookDetails() {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to remove this book from the archives?")) {
       try {
-        await deleteDoc(doc(db, "books", id));
+        await deleteBook(id);
         navigate("/browse"); // Or your main library page
       } catch (err) {
         alert("Error deleting book: " + err.message);

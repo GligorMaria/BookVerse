@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { Capacitor } from "@capacitor/core";
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDocs, writeBatch } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
@@ -38,6 +38,19 @@ const auth = isNative
   : getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+// Deletes a book together with its reviews subcollection.
+// Firestore does not delete subcollections on its own, so the reviews are
+// removed first, in batches of up to 500 writes (Firestore's batch limit).
+export async function deleteBook(bookId) {
+  const reviews = await getDocs(collection(db, "books", bookId, "reviews"));
+  const refs = [...reviews.docs.map((d) => d.ref), doc(db, "books", bookId)];
+  for (let i = 0; i < refs.length; i += 500) {
+    const batch = writeBatch(db);
+    refs.slice(i, i + 500).forEach((r) => batch.delete(r));
+    await batch.commit();
+  }
+}
 // Fail fast instead of retrying for up to 10 minutes when Storage is unreachable.
 storage.maxUploadRetryTime = 15000;
 storage.maxOperationRetryTime = 15000;
