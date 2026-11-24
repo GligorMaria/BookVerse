@@ -1,6 +1,5 @@
 import React from 'react';
-import {  signOut } from "firebase/auth";
-import {auth} from '../firebase/firebase';
+import { logOut } from '../firebase/firebase';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +8,7 @@ function SignOut() {
 
     const handleSignOut = async () => {
         try{
-            await signOut(auth);
+            await logOut();
             logout(); 
             console.log("Signed out successfully");
         }               

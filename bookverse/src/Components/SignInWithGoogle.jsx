@@ -1,6 +1,5 @@
 import googleLogo from "../google.png";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import {auth} from "../firebase/firebase"
+import { signInWithGoogle as firebaseSignInWithGoogle } from "../firebase/firebase"
 
 
 function SignInWithGoogle()
@@ -8,8 +7,7 @@ function SignInWithGoogle()
      const signInWithGoogle = async () => {
 
         try {
-            const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
+            await firebaseSignInWithGoogle();
         } catch (error) {
             console.error("Error initiating Google sign-in:", error.message);
         }

@@ -1,0 +1,11 @@
+{
+  "appId": "com.bookverse.app",
+  "appName": "BookVerse",
+  "webDir": "dist",
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": ["google.com"]
+    }
+  }
+}
