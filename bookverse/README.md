@@ -2,6 +2,10 @@
 
 React 19 + Vite single-page app on Firebase (Auth, Firestore, Storage), with an Android build through Capacitor.
 
+## Firebase keys
+
+The app reads its Firebase config from `.env` (git-ignored). Copy `.env.example` to `.env` and fill it in from Firebase console → Project settings → Your apps → Web app. In the Firebase project, enable Authentication (Google, Email/Password), Firestore and Storage.
+
 ## Web
 
 ```bash
@@ -33,6 +37,8 @@ For native sign-in to work:
 1. In the Firebase console, add an Android app with package name `com.bookverse.app`.
 2. Add the SHA-1 of your signing key (Android Studio: Gradle → `app` → Tasks → android → `signingReport`).
 3. Download `google-services.json` into `android/app/`. It is git-ignored.
+
+`android/variables.gradle` sets `rgcfaIncludeGoogle = true` so the Google Sign-In SDK is bundled.
 
 Email/password sign-in works without this step.
 
