@@ -6,6 +6,14 @@ React 19 + Vite single-page app on Firebase (Auth, Firestore, Storage), with an 
 
 The app reads its Firebase config from `.env` (git-ignored). Copy `.env.example` to `.env` and fill it in from Firebase console → Project settings → Your apps → Web app. In the Firebase project, enable Authentication (Google, Email/Password), Firestore and Storage.
 
+## Sample data
+
+```bash
+npm run seed
+```
+
+Adds 3 books with reviews and 3 sample reader profiles (with a friendship and a pending friend request) to Firestore, using the config in `.env`. It uses fixed document ids, so running it again does not create duplicates. The Firestore rules must allow writes while it runs. The sample readers have no login.
+
 ## Web
 
 ```bash
