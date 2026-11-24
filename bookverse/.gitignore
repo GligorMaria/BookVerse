@@ -12,8 +12,9 @@ dist
 dist-ssr
 *.local
 
-# Environment / secrets
-.env
+# Environment
+# .env (shared Firebase web config) is committed on purpose while the repo is private.
+# Personal overrides go in .env.local, which stays out of git.
 .env.*
 !.env.example
 
