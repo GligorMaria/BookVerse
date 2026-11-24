@@ -1,8 +1,23 @@
 import { useEffect, useState } from 'react';
-import { db, uploadImage } from '../firebase/firebase.js';
+import { db, uploadImage, deleteBook } from '../firebase/firebase.js';
 import { collection, onSnapshot, addDoc } from 'firebase/firestore';
+import { useAuth } from '../hooks/useAuth.jsx';
 
 export default function BookList() {
+    const { user, isAdmin } = useAuth();
+    // The person who added a book, or an admin, may remove it.
+    // Books added before ownerId existed can only be removed by an admin.
+    const canDelete = (book) => isAdmin || (user && book.ownerId === user.uid);
+
+    const handleDelete = async (book) => {
+        if (!window.confirm(`Remove "${book.title}" and all its reviews from the archive?`)) return;
+        try {
+            await deleteBook(book.id);
+        } catch (error) {
+            console.error("Deleting the book failed:", error);
+            alert("The book could not be removed: " + error.message);
+        }
+    };
     const [books, setBooks] = useState([]);
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
@@ -40,6 +55,7 @@ export default function BookList() {
                 title,
                 author,
                 coverImageURL: coverUrl,
+                ownerId: user?.uid || null,
                 createdAt: new Date()
             });
 
@@ -132,6 +148,15 @@ export default function BookList() {
                         </div>
                         <h3 className="text-lg italic text-[#4A443F] text-center mb-1">{book.title}</h3>
                         <p className="text-[10px] uppercase tracking-widest text-[#A39181]">{book.author}</p>
+                        {canDelete(book) && (
+                            <button
+                                type="button"
+                                onClick={() => handleDelete(book)}
+                                className="mt-3 px-4 py-1 border border-red-200 text-[9px] uppercase tracking-widest text-red-400 rounded-full hover:bg-red-400 hover:text-white transition-all duration-300"
+                            >
+                                Remove
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>

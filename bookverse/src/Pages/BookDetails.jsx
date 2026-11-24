@@ -58,8 +58,8 @@ function BookDetails() {
           ← Return to Library
         </button>
         
-        {/* Admin Delete Button */}
-        {userRole === "admin" && (
+        {/* Delete: admins, or the person who added the book */}
+        {(userRole === "admin" || (book.ownerId && book.ownerId === auth.currentUser?.uid)) && (
           <button 
             onClick={handleDelete}
             className="text-xs uppercase tracking-widest text-red-400 hover:text-red-600 border border-red-200 px-4 py-1 rounded"

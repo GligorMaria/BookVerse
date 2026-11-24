@@ -89,7 +89,8 @@ function Profile() {
   const handleSave = async () => {
     if (!isOwnProfile) return;
     try {
-      await setDoc(doc(db, "users", currentUser.uid), profile);
+      // merge keeps role, email and createdAt, which the profile form does not hold
+      await setDoc(doc(db, "users", currentUser.uid), profile, { merge: true });
       setIsEditing(false);
     } catch (err) { console.error(err); }
   };
