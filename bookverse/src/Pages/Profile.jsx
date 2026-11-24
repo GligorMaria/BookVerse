@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { auth, db, storage } from "../firebase/firebase.js";
+import { auth, db, uploadImage } from "../firebase/firebase.js";
 import SignOut from "../Components/SignOut";
 
 
@@ -79,12 +78,11 @@ function Profile() {
     const file = e.target.files[0];
     if (!file || !isOwnProfile) return;
     try {
-      const storageRef = ref(storage, `avatars/${currentUser.uid}`);
-      const uploadResult = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(uploadResult.ref);
+      const downloadURL = await uploadImage(`avatars/${currentUser.uid}`, file);
       setProfile((prev) => ({ ...prev, photoURL: downloadURL }));
     } catch (error) {
       console.error("Storage error:", error);
+      alert("The photo could not be uploaded. Please try again later.");
     }
   };
 

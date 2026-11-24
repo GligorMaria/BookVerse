@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { db, storage } from '../firebase/firebase.js';
+import { db, uploadImage } from '../firebase/firebase.js';
 import { collection, onSnapshot, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function BookList() {
     const [books, setBooks] = useState([]);
@@ -28,9 +27,13 @@ export default function BookList() {
 
         try {
             if (file) {
-                const storageRef = ref(storage, `covers/${Date.now()}-${file.name}`);
-                const uploadResult = await uploadBytes(storageRef, file);
-                coverUrl = await getDownloadURL(uploadResult.ref);
+                try {
+                    coverUrl = await uploadImage(`covers/${Date.now()}-${file.name}`, file);
+                } catch (error) {
+                    // Storage unavailable: keep the default cover and still add the book
+                    console.error("Cover upload failed:", error);
+                    alert("The cover could not be uploaded, so the book was added with the default cover.");
+                }
             }
 
             await addDoc(collection(db, 'books'), {
@@ -44,14 +47,8 @@ export default function BookList() {
             setAuthor("");
             setFile(null);
         } catch (error) {
-            console.error("Storage restricted:", error);
-            // Graceful fallback if Firebase Storage is still throwing that regional error
-            await addDoc(collection(db, 'books'), {
-                title,
-                author,
-                coverImageURL: coverUrl,
-                createdAt: new Date()
-            });
+            console.error("Adding the book failed:", error);
+            alert("The book could not be added: " + error.message);
         } finally {
             setLoading(false);
         }
